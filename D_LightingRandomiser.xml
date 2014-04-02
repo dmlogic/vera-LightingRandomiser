@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<root xmlns="urn:schemas-upnp-org:device-1-0">
+    <specVersion>
+        <major>1</major>
+        <minor>0</minor>
+    </specVersion>
+    <device>
+     <deviceType>urn:dmlogic-com:device:LightingRandomiser:1</deviceType>
+     <friendlyName>Heating Coordinator</friendlyName>
+     <manufacturer>dmlogic.com</manufacturer>
+     <manufacturerURL>http://dmlogic.com</manufacturerURL>
+     <modelDescription>LightingRandomiser</modelDescription>
+     <modelName>LightingRandomiser</modelName>
+     <modelNumber>1.0</modelNumber>
+    </serviceList>
+    <implementationList>
+        <implementationFile>I_LightingRandomiser.xml</implementationFile>
+    </implementationList>
+</device>
+</root>
