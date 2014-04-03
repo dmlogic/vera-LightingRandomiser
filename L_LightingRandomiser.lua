@@ -155,7 +155,7 @@ function lrSetDimmer( deviceId,value )
     luup.log("lrSetDimmer about to start HandleActionRequest for "..deviceId.." to "..value,25)
 
     lul_arguments = {}
-    lul_arguments["newLoadlevelTarget"] = value
+    lul_arguments["newLoadlevelTarget"] = tonumber(value)
     luup.call_action("urn:upnp-org:serviceId:Dimming1", "SetLoadLevelTarget", lul_arguments,tonumber(deviceId))
 
 
@@ -169,7 +169,7 @@ function lrSetSwitch( deviceId,onoff )
     luup.log("lrSetSwitch "..deviceId.." to "..onoff,25)
 
     lul_arguments = {}
-    lul_arguments["newTargetValue"] = onoff
+    lul_arguments["newTargetValue"] = tonumber(onoff)
     luup.call_action("urn:upnp-org:serviceId:SwitchPower1", "SetTarget", lul_arguments,tonumber(deviceId))
 end
 
