@@ -1,6 +1,5 @@
 <?xml version="1.0"?>
 <implementation>
-    <files>L_LightingRandomiser.lua</files>
+    <files>L_LightingRandomiser.lua,L_LightingRandomiser_schedule.lua,L_LightingRandomiser_zones.lua</files>
     <startup>lrStartup</startup>
-    </actionList>
 </implementation>

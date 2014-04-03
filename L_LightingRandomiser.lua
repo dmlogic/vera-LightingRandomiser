@@ -1,5 +1,6 @@
 json = require('json')
-io = require('io')
+
+package.path = '../?.lua;'..package.path
 
 local lrZoneData
 local lrSchedule
@@ -21,9 +22,11 @@ function lrSetupDay()
 
         -- Set on timer. "yyyy-mm-dd hh:mm:ss"
         luup.call_timer("lrTurnOn", 4, os.date("%Y-%m-%d %H:%M:%S",ontime), "", sched['zone'])
+        luup.log("lrTurnOn "..sched['zone'].." scheduled for "..os.date("%Y-%m-%d %H:%M:%S",ontime),25)
 
         -- set off timer
         luup.call_timer("lrTurnOff", 4, os.date("%Y-%m-%d %H:%M:%S",offtime), "", sched['zone'])
+        luup.log("lrTurnOff "..sched['zone'].." scheduled for "..os.date("%Y-%m-%d %H:%M:%S",offtime),25)
 
     end
 
@@ -38,11 +41,15 @@ end
   ]]
 function lrTurnOn(zone)
 
+    luup.log("lrTurnOn "..zone,25)
+
     lrGetZones()
 
     for device,settings in pairs(lrZoneData[zone]) do
 
-        if settings["type"] == 'dimmer' then
+        luup.log("lrTurnOn device "..device,25)
+
+        if settings["type"] == "dimmer" then
             lrSetDimmer( device,settings["percentage"] )
         else
             lrSetSwitch(device,1)
@@ -55,6 +62,8 @@ end
   Turn off a zone
   ]]
 function lrTurnOff(zone)
+
+    luup.log("lrTurnOff "..zone,25)
 
     lrGetZones()
 
@@ -109,10 +118,16 @@ end
   ]]
 function lrGetZones()
     if(lrZoneData == nil) then
-        lrZoneData = lrReadJson("LightingRandomiser_zones.json")
+        -- lrZoneData = lrReadJson(dofile("/etc/cmh-ludl/LightingRandomiser_zones.json"))
+        lrSetZones(lrMyZones)
     end
 
     return lrZoneData
+end
+
+function lrSetZones(data)
+
+    lrZoneData = json.decode(data)
 end
 
 --[[
@@ -120,50 +135,53 @@ end
   ]]
 function lrGetSchedule()
     if(lrSchedule == nil) then
-        lrSchedule = lrReadJson("LightingRandomiser_schedule.json")
+        lrSetSchedule(lrMyScedule)
     end
 
     return lrSchedule
 end
 
---[[
-  Read External JSON
-  ]]
-function lrReadJson(filename)
-    f = io.open(filename, "rb")
-    content = f:read("*all")
-    f:close()
-    return json.decode(content)
+function lrSetSchedule(data)
+
+    lrSchedule = json.decode(data)
 end
+
 
 --[[
   Set a dimmer value
   ]]
-function lrSetDimmer( id,value )
+function lrSetDimmer( deviceId,value )
+
+    luup.log("lrSetDimmer about to start HandleActionRequest for "..deviceId.." to "..value,25)
 
     lul_arguments = {}
     lul_arguments["newLoadlevelTarget"] = value
-    luup.call_action("urn:upnp-org:serviceId:Dimming1", "SetLoadLevelTarget", lul_arguments,id)
+    luup.call_action("urn:upnp-org:serviceId:Dimming1", "SetLoadLevelTarget", lul_arguments,tonumber(deviceId))
+
 
 end
 
 --[[
   Control a basic on/off switch
   ]]
-function lrSetSwitch( id,onoff )
+function lrSetSwitch( deviceId,onoff )
+
+    luup.log("lrSetSwitch "..deviceId.." to "..onoff,25)
 
     lul_arguments = {}
     lul_arguments["newTargetValue"] = onoff
-    luup.call_action("urn:upnp-org:serviceId:SwitchPower1", "SetTarget", lul_arguments,id)
+    luup.call_action("urn:upnp-org:serviceId:SwitchPower1", "SetTarget", lul_arguments,tonumber(deviceId))
 end
 
 --[[
     Startup function.
     Receives a map or sets the default
 ]]
-function lrStartup(lul_device, relayId, controllerId)
+function lrStartup(lul_device)
 
     luup.task("Running Lua Startup", 1, "LightingRandomiser", -1)
+
+    luup.log("lrStartup",25)
 
     -- Set the schedule
     lrSetupDay()

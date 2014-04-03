@@ -1,3 +1,4 @@
+lrMyScedule = [[
 [
     {
         "zone": "lounge",
@@ -14,3 +15,4 @@
         "maxOff": "05:03:00"
     }
 ]
+]]

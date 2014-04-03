@@ -4,10 +4,12 @@ package.path = '../?.lua;'..package.path
 require('luup');
 require('L_LightingRandomiser')
 
+dofile("../L_LightingRandomiser_zones.sample.lua")
+dofile("../L_LightingRandomiser_schedule.sample.lua")
+
 TestCode = {} --class
 
-    function TestCode:testStartUp()
-        lrStartup(myMap)
+    function TestCode:testStuff()
     end
 
     function TestCode:testMakeTime()
